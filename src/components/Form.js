@@ -1,86 +1,15 @@
-import React, { Component } from "react";
-import "../App.css";
+import React, { Component } from 'react';
+import '../App.css';
 
 class Form extends Component {
-  state = {
-    data: { firstname: "", lastname: "", age: "", gender: "" },
-    errors: {
-      firstname: "",
-      lastname: "",
-      age: "",
-      gender: "",
-    },
-
-    users: [],
-  };
-
-  firstname = (e) => {
-    this.setState({
-      data: { ...this.state.data, firstname: e.target.value },
-      errors: {
-        ...this.state.errors,
-        firstname: this.state.data.firstname == null || "" ? true : false,
-      },
-    });
-  };
-  lastname = (e) => {
-    this.setState({
-      data: { ...this.state.data, lastname: e.target.value },
-      errors: {
-        ...this.state.errors,
-        lastname: this.state.data.lastname == null || "" ? true : false,
-      },
-    });
-  };
-  age = (e) => {
-    this.setState({
-      data: { ...this.state.data, age: e.target.value },
-      errors: {
-        ...this.state.errors,
-        age: this.state.data.age == null || "" ? true : false,
-      },
-    });
-  };
-  gender = (e) => {
-    this.setState({
-      data: { ...this.state.data, gender: e.target.value },
-      errors: {
-        ...this.state.errors,
-        gender: this.state.data.gender == null || "" ? true : false,
-      },
-    });
-  };
-  validate = () => {
-    this.setState({
-      errors: {
-        firstname: this.state.data.firstname == "",
-        lastname: this.state.data.lastname == "",
-        age: this.state.data.age == "",
-        gender: this.state.data.gender == "",
-      },
-    });
-    return (
-      this.state.data.firstname == "" ||
-      this.state.data.lastname == "" ||
-      this.state.data.age == "" ||
-      this.state.data.gender == ""
-    );
-  };
-  onSubmit = (e) => {
+onSubmit = (e) => {
     e.preventDefault();
-
-    if (this.validate()) return;
-
-    this.setState({
-      users: [...this.state.users, this.state.data],
-      data: { firstname: "", lastname: "", age: "", gender: "" },
-    });
-
-    this.props.updateUsers(this.state.data);
-    this.setState({
-      data: { firstname: "", lastname: "", age: "", gender: "" },
-    });
+    this.props.submitData();
   };
+
+onChange = (e) => {
+    this.props.change(e.target.name,e.target.value)
+  }
 
   render() {
     return (
@@ -94,11 +23,12 @@ class Form extends Component {
                 className="form-control"
                 id="firstname"
                 placeholder="Enter First Name"
-                value={this.state.data.firstname}
-                onChange={this.firstname}
+                value={this.props.data.firstname}
+                name="firstname"
+                onChange={this.onChange}
               />
               <div className="error">
-                {this.state.errors.firstname ? "Name is required" : ""}
+                {this.props.errors.firstname ? 'Name is required' : ''}
               </div>
             </div>
 
@@ -108,12 +38,13 @@ class Form extends Component {
                 type="text"
                 className="form-control"
                 id="lastname"
+                name="lastname"
                 placeholder="Enter Last Name"
-                value={this.state.data.lastname}
-                onChange={this.lastname}
+                value={this.props.data.lastname}
+                onChange={this.onChange}
               />
               <div className="error">
-                {this.state.errors.lastname ? "Name is required " : ""}
+                {this.props.errors.lastname ? 'Name is required ' : ''}
               </div>
             </div>
           </div>
@@ -124,13 +55,14 @@ class Form extends Component {
                 type="number"
                 className="form-control"
                 id="age"
+                name="age"
                 placeholder="Enter Age"
-                value={this.state.data.age}
-                onChange={this.age}
+                value={this.props.data.age}
+                onChange={this.onChange}
               />
               <div className="error">
-                {this.state.errors.age ? "Age is required" : ""}
-              </div>{" "}
+                {this.props.errors.age ? 'Age is required' : ''}
+              </div>{' '}
             </div>
 
             <div className="form-group col-md-6">
@@ -145,11 +77,11 @@ class Form extends Component {
                         <input
                           className="form-check-input"
                           type="radio"
-                          name="Male"
-                          id="Male"
-                          value="Male"
-                          onClick={this.gender}
-                          checked={this.state.data.gender === "Male"}
+                          name="gender"
+                          id="male"
+                          value="male"
+                          onClick={this.onChange}
+                          checked={this.props.data.gender === 'male'}
                         />
                         <label>Male</label>
                       </div>
@@ -157,11 +89,11 @@ class Form extends Component {
                         <input
                           className="form-check-input"
                           type="radio"
-                          name="Female"
-                          id="Female"
-                          value="Female"
-                          onClick={this.gender}
-                          checked={this.state.data.gender === "Female"}
+                          name="gender"
+                          id="female"
+                          value="female"
+                          onClick={this.onChange}
+                          checked={this.props.data.gender === 'female'}
                         />
                         <label>Female</label>
                       </div>
@@ -169,7 +101,7 @@ class Form extends Component {
                   </div>
                 </fieldset>
                 <div className="error">
-                  {this.state.errors.gender ? "please select gender" : ""}
+                  {this.props.errors.gender ? 'please select gender' : ''}
                 </div>
               </div>
             </div>
