@@ -67,7 +67,42 @@
   width: 80%;
 }
 
+.pagination {
+  justify-content: center;
+}
+
 .tableHead {
   background-color: #247bb4;
   color: antiquewhite;
+}
+.edit {
+  background-color: rgb(87, 224, 87);
+  color: white;
+  border: 0;
+  /* margin: 10px; */
+  border-radius: 5px;
+  /* padding: 5px 10px; */
+}
+.AddDetails {
+  text-align: center;
+  margin: 50px;
+}
+.form-control {
+  width: 70%;
+}
+/* .column {
+  text-align: center;
+  float: right;
+} */
+.input {
+  margin: auto;
+  text-align: center;
+  display: flex;
+  width: 50%;
+}
+.head {
+  margin: 20px;
+}
+.form-row {
+  width: 150%;
 }
