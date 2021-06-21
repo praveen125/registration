@@ -10,7 +10,7 @@ export default function Table(props) {
   const pageNumbers = [];
   const [personsPerPage, setPersonsPerPage] = useState(3);
   const [pageNumberLimit, setPageNumberLimit] = useState(2);
-  const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(2);
+  const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(1);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
 
   ///searchtext
@@ -65,7 +65,6 @@ export default function Table(props) {
 
   for (let i = 1; i <= Math.ceil(props.users.length / personsPerPage); i++) {
     pageNumbers.push(i);
-    console.log(pageNumbers);
   }
 
   //Pagination EventHandlers
@@ -140,7 +139,7 @@ export default function Table(props) {
     }
   });
   return (
-    <Fragment text-align="center">
+    <div style={{ textAlign: "center" }}>
       <input
         className="input"
         type="text"
@@ -227,7 +226,7 @@ export default function Table(props) {
                     style={{ backgroundColor: "red" }}
                     id={person._id}
                     name={person}
-                    onClick={(e) => props.delete(e.target.id)}
+                    onClick={(e) => props.deletePerson(e.target.id)}
                   >
                     DELETE
                   </button>
@@ -249,6 +248,6 @@ export default function Table(props) {
           />
         </div>
       </div>
-    </Fragment>
+    </div>
   );
 }

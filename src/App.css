@@ -85,7 +85,7 @@
 }
 .AddDetails {
   text-align: center;
-  margin: 50px;
+  margin: 30px;
 }
 .form-control {
   width: 70%;
@@ -99,6 +99,7 @@
   text-align: center;
   display: flex;
   width: 50%;
+  border-radius: 8px;
 }
 .head {
   margin: 20px;

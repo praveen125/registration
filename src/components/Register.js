@@ -1,88 +1,14 @@
 import React, { Component } from "react";
-import Form from "./Form";
 import Table from "./Table";
-import Modalpop from "./Modalpop";
 import MyVerticallyCenteredModal from "./MyVerticallyCenteredModal";
+import { connect } from "react-redux";
 import axios from "axios";
+import { getPersons, setCurrent } from "../actions/personActions";
 
 class Register extends Component {
   state = {
-    // items: [],
-    users: [],
-    //   {
-    //     firstName: "praveen",
-    //     lastName: "surisetty",
-    //     age: "23",
-    //     gender: "male",
-    //   },
-    //   {
-    //     firstName: "naidu",
-    //     lastName: "bandaru",
-    //     age: "25",
-    //     gender: "male",
-    //   },
-    //   {
-    //     firstName: "sravani",
-    //     lastName: "jampa",
-    //     age: "23",
-    //     gender: "female",
-    //   },
-    //   {
-    //     firstName: "nagu",
-    //     lastName: "surisetti",
-    //     age: "23",
-    //     gender: "male",
-    //   },
-    //   {
-    //     firstName: "demudu",
-    //     lastName: "pyla",
-    //     age: "23",
-    //     gender: "male",
-    //   },
-    //   {
-    //     firstName: "leela",
-    //     lastName: "jampa",
-    //     age: "23",
-    //     gender: "female",
-    //   },
-    //   {
-    //     firstName: "kumari",
-    //     lastName: "jampa",
-    //     age: "23",
-    //     gender: "female",
-    //   },
-    //   {
-    //     firstName: "appi",
-    //     lastName: "kaligi",
-    //     age: "23",
-    //     gender: "male",
-    //   },
-    //   {
-    //     firstName: "kamesh",
-    //     lastName: "pyla",
-    //     age: "23",
-    //     gender: "male",
-    //   },
-    //   {
-    //     firstName: "vasanth",
-    //     lastName: "gummidi",
-    //     age: "23",
-    //     gender: "male",
-    //   },
-    //   {
-    //     firstName: "pavani",
-    //     lastName: "kumari",
-    //     age: "23",
-    //     gender: "female",
-    //   },
-    //   {
-    //     firstName: "siri",
-    //     lastName: "jampa",
-    //     age: "23",
-    //     gender: "female",
-    //   },
-    // ],
-    data: {
+    // users: [],
+    person: {
       firstName: "",
       lastName: "",
       age: "",
@@ -94,154 +20,131 @@ class Register extends Component {
       age: "",
       gender: "",
     },
-    currentId: -1,
+    current: null,
     show: false,
   };
+
   //get request
 
-  componentDidMount = async () => {
-    await axios
-      .get("/persons")
-      .then((res) => res.data)
-      .then((data) => {
-        console.log(data);
-
-        this.setState({ users: data });
-      });
-  };
-
-  // // post request
-
-  componentWillMount = async () => {
-    await axios
-      .post("/persons")
-      .then((res) => res.data)
-      .then((data) => {
-        this.setState({ users: data });
-      });
-  };
-  //update
-  // componentWillMount = async (id) => {
-  //   await axios
-  //     .put(`/persons/${id}`)
+  // getData = () => {
+  //   axios
+  //     .get("/persons")
   //     .then((res) => res.data)
   //     .then((data) => {
+  //       // console.log(data);
   //       this.setState({ users: data });
   //     });
   // };
 
-  //delete
+  // componentDidMount = () => {
+  //   this.getData();
+  // };
+
+  // componentDidUpdate = () => {
+  //   this.getData();
+  // };
+
+  componentDidMount = () => {
+    getPersons();
+  };
+
+  addPerson = (newPerson) => {
+    axios.post("/persons", newPerson);
+    this.setState({ show: false });
+    // this.getData();
+  };
 
   edit = (id) => {
-    this.showModel();
-    this.updatedPerson(id);
-  };
-  updatedPerson = (person) => async (id) => {
-    // console.log(person._id);
-    await axios.put(`/persons/${person._id}`);
-
     this.setState({
-      data: this.state.users[id],
-      currentId: id,
-      errors: {
-        firstName: "",
-        lastName: "",
-        age: "",
-        gender: "",
-      },
+      show: true,
+      current: id,
+      person: this.state.users.find((person) => person._id === id),
     });
-    console.log(this.state.users[id]);
+  };
+  // setCurrent(id);
+
+  updatePerson = (person) => {
+    axios
+      .put(`/persons/${this.state.current}`, person)
+      .then((res) => res.data)
+      .then((data) => {
+        this.setState([...this.state.users, { users: data }]);
+      });
+    this.setState({ show: false, current: null });
+    // this.getData();
   };
 
-  delete = (id) => {
-    this.deletePerson(id);
+  deletePerson = (id) => {
+    axios
+      .delete(`/persons/${id}`)
+      .then((res) => res.data)
+      .then((data) => {
+        const deleteData = this.state.users.filter((user) => user._id !== data);
+        this.setState({ users: deleteData });
+      });
   };
 
-  deletePerson = async (id) => {
-    await axios.delete(`/persons/${id}`);
+  onChange = (field, value) => {
     this.setState({
-      users: this.state.users.filter((person) => person._id != id),
+      person: { ...this.state.person, [field]: value },
+      errors: {
+        ...this.state.errors,
+        [field]: this.state.person[field] == null || "" ? true : false,
+      },
     });
   };
 
   validate = () => {
+    // console.log("test98", this.state.person, this.state.errors);
     this.setState({
       errors: {
-        firstName: this.state.data.firstName == "",
-        lastName: this.state.data.lastName == "",
-        age: this.state.data.age == "",
-        gender: this.state.data.gender == "",
+        firstName: this.state.person.firstName === "",
+        lastName: this.state.person.lastName === "",
+        age: this.state.person.age === "",
+        gender: this.state.person.gender === "",
       },
     });
     return (
-      this.state.data.firstName == "" ||
-      this.state.data.lastName == "" ||
-      this.state.data.age == "" ||
-      this.state.data.gender == ""
+      this.state.person.firstName !== "" &&
+      this.state.person.lastName !== "" &&
+      this.state.person.age !== "" &&
+      this.state.person.gender !== ""
     );
   };
 
-  submitData = () => {
-    if (this.validate()) return;
-    // if (this.state.data != "") {
-    if (this.state.currentId == -1) {
-      console.log(this.state.currentId);
-      this.setState({
-        users: [...this.state.users, this.state.data],
-        data: {
-          firstName: "",
-          lastName: "",
-          age: "",
-          gender: "",
-        },
-      });
+  submitData = (e) => {
+    e.preventDefault();
+    if (!this.validate()) return;
+    if (this.state.current == null) {
+      this.addPerson(this.state.person);
     } else {
-      const newList = this.state.users.map((person, i) => {
-        if (this.state.currentId == i) {
-          return this.state.data;
-        } else {
-          return person;
-        }
-      });
-      this.setState({
-        users: newList,
-        currentId: -1,
-        // users: [...this.state.users, this.state.data],
-        data: { firstName: "", lastName: "", age: "", gender: "" },
-      });
+      this.updatePerson(this.state.person);
     }
   };
-  // this.setState({
-  //   users: [...this.state.users, this.state.data],
-  //   data: { firstName: "", lastName: "", age: "", gender: "" },
-  // });
 
-  onChange = (field, value) => {
-    this.setState({
-      data: { ...this.state.data, [field]: value },
-      errors: {
-        ...this.state.errors,
-        [field]: this.state.data.age == null || "" ? true : false,
-      },
-    });
-  };
   clearFields = (e) => {
-    // e.preventDefault();
+    e.preventDefault();
     this.setState({
-      data: { firstName: "", lastName: "", age: "", gender: "" },
+      person: { firstName: "", lastName: "", age: "", gender: "" },
     });
   };
 
   showModel = () => {
-    // e.preventDefault();
     this.setState({ show: true });
   };
 
   closeModel = () => {
+    this.setState({
+      person: { firstName: "", lastName: "", age: "", gender: "" },
+    });
+    this.setState({ current: null });
     this.setState({ show: false });
+    // showModal();
   };
 
   render() {
+    const { person, current, show } = this.props.data;
+
     return (
       <div>
         <MyVerticallyCenteredModal
@@ -250,17 +153,25 @@ class Register extends Component {
           closeModel={this.closeModel}
           submitData={this.submitData}
           change={this.onChange}
-          data={this.state.data}
+          person={this.state.person}
           errors={this.state.errors}
-          currentId={this.state.currentId}
+          current={this.state.current}
           clearFields={this.clearFields}
           onSubmit={this.onSubmit}
         />
         {/* <Form /> */}
-        <Table users={this.state.users} edit={this.edit} delete={this.delete} />
+        <Table
+          users={person}
+          edit={this.edit}
+          deletePerson={this.deletePerson}
+        />
       </div>
     );
   }
 }
 
-export default Register;
+const mapStateToProps = (state) => ({
+  data: state.person,
+});
+
+export default connect(mapStateToProps, { getPersons })(Register);

@@ -2,19 +2,13 @@ import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 
 function MyVerticallyCenteredModal(props) {
-  console.log(props);
-  // const [searchText, setSearchText] = useState("");
-  // const [sortCol, setSortCol] = useState("");
-  // const [sortOrder, setSortOrder] = useState("");
-  // const [showSortButton, setShowSortButton] = useState("");
-  // const [clickSortButton, setClickSortButton] = useState("");
-
-  const onsubmit = (e) => {
+  // console.log(props);
+  const onSubmit = (e) => {
     e.preventDefault();
-    props.submitData();
+    props.submitData(e);
   };
 
-  const onchange = (e) => {
+  const onChange = (e) => {
     props.change(e.target.name, e.target.value);
   };
 
@@ -40,7 +34,7 @@ function MyVerticallyCenteredModal(props) {
 
         <Modal.Body>
           <h4>Fill the Registartion Form:</h4>
-          <form onSubmit={onsubmit} className="center">
+          <form onSubmit={onSubmit} className="center">
             <div className="form-row">
               <div className="form-group col-md-6">
                 <label className="float">First Name :</label>
@@ -50,9 +44,9 @@ function MyVerticallyCenteredModal(props) {
                   className="form-control"
                   id="firstName"
                   placeholder="Enter First Name"
-                  value={props.data.firstName}
+                  value={props.person.firstName}
                   name="firstName"
-                  onChange={onchange}
+                  onChange={onChange}
                 />
                 <div className="error">
                   {props.errors.firstName ? "Name is required" : ""}
@@ -68,8 +62,8 @@ function MyVerticallyCenteredModal(props) {
                   id="lastName"
                   name="lastName"
                   placeholder="Enter Last Name"
-                  value={props.data.lastName}
-                  onChange={onchange}
+                  value={props.person.lastName}
+                  onChange={onChange}
                 />
                 <div className="error">
                   {props.errors.lastName ? "Name is required " : ""}
@@ -85,8 +79,8 @@ function MyVerticallyCenteredModal(props) {
                   id="age"
                   name="age"
                   placeholder="Enter Age"
-                  value={props.data.age}
-                  onChange={onchange}
+                  value={props.person.age}
+                  onChange={onChange}
                 />
                 <div className="error">
                   {props.errors.age ? "Age is required" : ""}
@@ -109,8 +103,8 @@ function MyVerticallyCenteredModal(props) {
                             name="gender"
                             id="male"
                             value="male"
-                            onClick={onchange}
-                            checked={props.data.gender === "male"}
+                            onClick={onChange}
+                            checked={props.person.gender === "male"}
                           />
                           <div>
                             <label
@@ -128,8 +122,8 @@ function MyVerticallyCenteredModal(props) {
                             name="gender"
                             id="female"
                             value="female"
-                            onClick={onchange}
-                            checked={props.data.gender === "female"}
+                            onClick={onChange}
+                            checked={props.person.gender === "female"}
                           />
                           <label className="form-check-label" for="gridRadios2">
                             Female
@@ -145,8 +139,8 @@ function MyVerticallyCenteredModal(props) {
               </div>
             </div>
             <div>
-              <button className="submit" onClick={onsubmit}>
-                {props.currentId != -1 ? "Update" : "Submit"}
+              <button className="submit" onClick={onSubmit}>
+                {props.current === null ? "Submit" : "Update"}
               </button>
               <button
                 className="submit"

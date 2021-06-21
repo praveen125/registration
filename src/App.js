@@ -2,16 +2,17 @@ import React, { Component } from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Register from "./components/Register";
-import MyVerticallyCenteredModal from "./components/MyVerticallyCenteredModal";
-import Modalpop from "./components/Modalpop";
+
+import { Provider } from "react-redux";
+import store from "./store";
 
 class App extends Component {
   render() {
     return (
       <div>
-        <Register />
-        {/* <MyVerticallyCenteredModal /> */}
-        {/* <Modalpop /> */}
+        <Provider store={store}>
+          <Register />
+        </Provider>
       </div>
     );
   }
